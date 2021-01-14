@@ -51,7 +51,7 @@ public class Checker {
     }
 
     public boolean isOnKingRow() {
-        if (side == Checker.Side.BLACK) {
+        if (side == Side.BLACK) {
             return (position.getBoardRow() == 1);
         } else {
             return (position.getBoardRow() == 8);

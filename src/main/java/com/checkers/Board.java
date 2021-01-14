@@ -1,7 +1,7 @@
 package com.checkers;
 
-import java.util.Hashtable;
 import java.util.Collection;
+import java.util.Hashtable;
 
 public class Board {
     private final Hashtable<BoardPosition, Checker> board
