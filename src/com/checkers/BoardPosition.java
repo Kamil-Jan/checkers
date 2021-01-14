@@ -1,3 +1,5 @@
+package com.checkers;
+
 import java.security.InvalidParameterException;
 
 public class BoardPosition {
@@ -58,8 +60,7 @@ public class BoardPosition {
         Integer[] rows = { 1, 2, 3, 4, 5, 6, 7, 8 };
         Character[] columns = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
         try {
-            String position = columns[col - 1].toString() + rows[row - 1].toString();
-            return position;
+            return columns[col - 1].toString() + rows[row - 1].toString();
         } catch (IndexOutOfBoundsException e) {
             return "";
         }
@@ -77,8 +78,7 @@ public class BoardPosition {
             col = 2 * (pos - row * 4) - 2;
         }
 
-        String position = columns[col].toString() + rows[row].toString();
-        return position;
+        return columns[col].toString() + rows[row].toString();
     }
 
     public static int convertStringPosToInt(String pos) {
@@ -86,7 +86,7 @@ public class BoardPosition {
             return -1;
         }
 
-        int row = 8 - (Integer.valueOf(pos.charAt(1)) - 48);
+        int row = 8 - ((int) pos.charAt(1) - 48);
         int col = pos.charAt(0) - 96;
         if (row % 2 == 0) {
             if (col % 2 == 0)
@@ -100,9 +100,7 @@ public class BoardPosition {
     }
 
     public static boolean isValidPosition(int pos) {
-        if (pos >= 1 && pos <= 32)
-            return true;
-        return false;
+        return pos >= 1 && pos <= 32;
     }
 
     public static boolean isValidPosition(String pos) {
@@ -124,7 +122,7 @@ public class BoardPosition {
 
     @Override
     public int hashCode() {
-        return stringPosition.charAt(0) * 10 + Integer.valueOf(stringPosition.charAt(1) - 48);
+        return stringPosition.charAt(0) * 10 + stringPosition.charAt(1) - 48;
     }
 
     @Override

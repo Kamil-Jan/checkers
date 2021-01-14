@@ -1,12 +1,14 @@
+package com.checkers;
+
 import java.util.Hashtable;
 import java.util.Collection;
 
 public class Board {
-    private Hashtable<BoardPosition, Checker> board
+    private final Hashtable<BoardPosition, Checker> board
         = new Hashtable<>();
     private int whiteSideCheckerCount;
     private int blackSideCheckerCount;
-    private Checker nullChecker = new Checker(Checker.Side.WHITE);
+    private final Checker nullChecker = new Checker(Checker.Side.WHITE);
     private Checker.Side winner;
 
     public void initBoard() {
@@ -174,9 +176,7 @@ public class Board {
     }
 
     public boolean isOccupied(BoardPosition bPos) {
-        if (board.containsKey(bPos) && !board.get(bPos).equals(nullChecker))
-            return true;
-        return false;
+        return board.containsKey(bPos) && !board.get(bPos).equals(nullChecker);
     }
 
     public Checker.Side getWinner() {
@@ -188,24 +188,24 @@ public class Board {
     }
 
     public boolean isWhiteWin() {
-        boolean isWinner = (blackSideCheckerCount == 0 || !canSideMove(Checker.Side.BLACK));
+        boolean isWinner = (blackSideCheckerCount == 0 || cantSideMove(Checker.Side.BLACK));
         if (isWinner) winner = Checker.Side.WHITE;
         return isWinner;
     }
 
     public boolean isBlackWin() {
-        boolean isWinner = (whiteSideCheckerCount == 0 || !canSideMove(Checker.Side.WHITE));
+        boolean isWinner = (whiteSideCheckerCount == 0 || cantSideMove(Checker.Side.WHITE));
         if (isWinner) winner = Checker.Side.BLACK;
         return isWinner;
     }
 
-    public boolean canSideMove(Checker.Side side) {
+    public boolean cantSideMove(Checker.Side side) {
         for (Checker checker : getCheckers()) {
             if (checker.getSide() == side && checker.canMove(this)) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     public static void clearConsole() {

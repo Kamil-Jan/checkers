@@ -1,15 +1,17 @@
+package com.checkers;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.function.Function;
 
 public class Move {
-    private BoardPosition startPos;
-    private BoardPosition endPos;
-    private Board board;
-    private boolean isValid;
+    private final BoardPosition startPos;
+    private final BoardPosition endPos;
+    private final Board board;
+    private final boolean isValid;
 
-    private Checker movingChecker;
-    private List<Checker> capturedCheckers = new ArrayList<>();
+    private final Checker movingChecker;
+    private final List<Checker> capturedCheckers = new ArrayList<>();
 
     public Move(int startPos, int endPos, Board board) {
         this.startPos = new BoardPosition(startPos);
@@ -75,13 +77,10 @@ public class Move {
         int endCol = endPos.getBoardCol();
 
         if (movingChecker.getSide() == Checker.Side.BLACK) {
-            if (endRow == startRow - 1 && Math.abs(endCol - startCol) == 1)
-                return true;
+            return endRow == startRow - 1 && Math.abs(endCol - startCol) == 1;
         } else {
-            if (endRow == startRow + 1 && Math.abs(endCol - startCol) == 1)
-                return true;
+            return endRow == startRow + 1 && Math.abs(endCol - startCol) == 1;
         }
-        return false;
     }
 
     public boolean isValidKingMove() {
@@ -226,11 +225,10 @@ public class Move {
 
     @Override
     public String toString() {
-        String string = String.format(
-            "Move from %s to %s; isValidMove? %s; capturedCheckers=%s",
+        return String.format(
+            "src.com.checkers.Move from %s to %s; isValidMove? %s; capturedCheckers=%s",
             startPos, endPos, isValid, capturedCheckers
         );
-        return string;
     }
 
     public static void main(String[] args) {

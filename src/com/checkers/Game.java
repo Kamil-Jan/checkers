@@ -1,3 +1,5 @@
+package com.checkers;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.io.BufferedReader;
@@ -8,7 +10,7 @@ public class Game {
     private Board board;
 
     private BoardPosition getPosition(BufferedReader br, String text) {
-        String stringPos = "";
+        String stringPos;
         while (true) {
             System.out.print(text);
 
@@ -24,7 +26,6 @@ public class Game {
 
             if (!BoardPosition.isValidPosition(stringPos)) {
                 System.out.println("Invalid position");
-                continue;
             } else
                 break;
         }
@@ -117,8 +118,4 @@ public class Game {
         System.out.println(board.getWinner() + " won!");
     }
 
-    public static void main(String[] args) {
-        Game game = new Game();
-        game.run();
-    }
 }

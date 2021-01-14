@@ -1,11 +1,13 @@
+package com.checkers;
+
 import java.util.function.Function;
 
 public class Checker {
     public enum Side {
-        BLACK, WHITE;
+        BLACK, WHITE
     }
 
-    private Side side;
+    private final Side side;
     private char symbol;
     private boolean king;
     private BoardPosition position;
@@ -62,14 +64,12 @@ public class Checker {
         int row = position.getBoardRow();
         int col = position.getBoardCol();
 
-        Function<Move, Boolean> moveFilter =
-            (Move move) -> (move.isValidMove());
+        Function<Move, Boolean> moveFilter = Move::isValidMove;
         if (!king) {
             if (isFilteredNormalMove(row, col, row - 1, col - 1, board, moveFilter)) return true;
             if (isFilteredNormalMove(row, col, row - 1, col + 1, board, moveFilter)) return true;
             if (isFilteredNormalMove(row, col, row + 1, col - 1, board, moveFilter)) return true;
-            if (isFilteredNormalMove(row, col, row + 1, col + 1, board, moveFilter)) return true;
-            return false;
+            return isFilteredNormalMove(row, col, row + 1, col + 1, board, moveFilter);
         } else {
             Function<Integer, Integer> add = (Integer x) -> x + 1;
             Function<Integer, Integer> subtract = (Integer x) -> x - 1;
@@ -77,8 +77,7 @@ public class Checker {
             if (isFilteredKingMove(row, col, add, add, board, moveFilter)) return true;
             if (isFilteredKingMove(row, col, add, subtract, board, moveFilter)) return true;
             if (isFilteredKingMove(row, col, subtract, add, board, moveFilter)) return true;
-            if (isFilteredKingMove(row, col, subtract, subtract, board, moveFilter)) return true;
-            return false;
+            return isFilteredKingMove(row, col, subtract, subtract, board, moveFilter);
         }
     }
 
@@ -95,8 +94,7 @@ public class Checker {
             if (isFilteredNormalMove(row, col, row - 2, col - 2, board, captureFilter)) return true;
             if (isFilteredNormalMove(row, col, row - 2, col + 2, board, captureFilter)) return true;
             if (isFilteredNormalMove(row, col, row + 2, col - 2, board, captureFilter)) return true;
-            if (isFilteredNormalMove(row, col, row + 2, col + 2, board, captureFilter)) return true;
-            return false;
+            return isFilteredNormalMove(row, col, row + 2, col + 2, board, captureFilter);
         } else {
             Function<Move, Boolean> captureFilter =
                 (Move move) -> (move.isValidKingCapture() && move.isValidMove());
@@ -107,8 +105,7 @@ public class Checker {
             if (isFilteredKingMove(row, col, add, add, board, captureFilter)) return true;
             if (isFilteredKingMove(row, col, add, subtract, board, captureFilter)) return true;
             if (isFilteredKingMove(row, col, subtract, add, board, captureFilter)) return true;
-            if (isFilteredKingMove(row, col, subtract, subtract, board, captureFilter)) return true;
-            return false;
+            return isFilteredKingMove(row, col, subtract, subtract, board, captureFilter);
         }
     }
 
@@ -120,9 +117,7 @@ public class Checker {
             BoardPosition startBPos = new BoardPosition(startRow, startCol);
             BoardPosition endBPos = new BoardPosition(endRow, endCol);
             Move move = new Move(startBPos, endBPos, board);
-            if (filter.apply(move)) {
-                return true;
-            }
+            return filter.apply(move);
         }
         return false;
     }
@@ -149,20 +144,17 @@ public class Checker {
             BoardPosition startBPos = new BoardPosition(startRow, startCol);
             BoardPosition endBPos = new BoardPosition(endRow, endCol);
             Move move = new Move(startBPos, endBPos, board);
-            if (filter.apply(move)) {
-                return true;
-            }
+            return filter.apply(move);
         }
         return false;
     }
 
     @Override
     public String toString() {
-        String string = String.format(
+        return String.format(
             "Side=%s; position=%s, isKing=%b; symbol=%s",
             side, position, king, symbol
         );
-        return string;
     }
 
     private void setSymbol() {
