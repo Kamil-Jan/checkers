@@ -7,30 +7,27 @@ public class BoardPosition {
     int intPosition;
 
     public BoardPosition(int pos) {
-        if (isValidPosition(pos)) {
-            stringPosition = convertIntPosToString(pos);
-            intPosition = pos;
-        }
-        else
+        if (!isValidPosition(pos))
             throw new InvalidParameterException("Invalid position: " + pos);
+
+        stringPosition = convertIntPosToString(pos);
+        intPosition = pos;
     }
 
     public BoardPosition(String pos) {
-        if (isValidPosition(pos)) {
-            stringPosition = pos;
-            intPosition = convertStringPosToInt(pos);
-        }
-        else
+        if (!isValidPosition(pos))
             throw new InvalidParameterException("Invalid position: " + pos);
+
+        stringPosition = pos;
+        intPosition = convertStringPosToInt(pos);
     }
 
     public BoardPosition(int row, int col) {
-        if (isValidPosition(row, col)) {
-            stringPosition = convertRowColPosToString(row, col);
-            intPosition = convertStringPosToInt(stringPosition);
-        }
-        else
+        if (!isValidPosition(row, col))
             throw new InvalidParameterException("Invalid position: " + row + " " + col);
+
+        stringPosition = convertRowColPosToString(row, col);
+        intPosition = convertStringPosToInt(stringPosition);
     }
 
     public String getStringPosition() {
@@ -47,23 +44,18 @@ public class BoardPosition {
 
     public int getBoardCol() {
         int row = 8 - getBoardRow();
-        int col;
-        if (row % 2 == 0) {
-            col = 2 * (intPosition - row * 4);
-        } else {
-            col = 2 * (intPosition - row * 4) - 1;
-        }
-        return col;
+        if (row % 2 == 0)
+            return 2 * (intPosition - row * 4);
+        return 2 * (intPosition - row * 4) - 1;
     }
 
     public static String convertRowColPosToString(int row, int col) {
+        if ( (1 > row || row > 8) || (1 > col || col > 8) )
+            return "";
+
         Integer[] rows = { 1, 2, 3, 4, 5, 6, 7, 8 };
         Character[] columns = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
-        try {
-            return columns[col - 1].toString() + rows[row - 1].toString();
-        } catch (IndexOutOfBoundsException e) {
-            return "";
-        }
+        return columns[col - 1].toString() + rows[row - 1].toString();
     }
 
     public static String convertIntPosToString(int pos) {
@@ -104,11 +96,11 @@ public class BoardPosition {
     }
 
     public static boolean isValidPosition(String pos) {
-        return isValidPosition(BoardPosition.convertStringPosToInt(pos));
+        return isValidPosition(convertStringPosToInt(pos));
     }
 
     public static boolean isValidPosition(int row, int col) {
-        return isValidPosition(BoardPosition.convertRowColPosToString(row, col));
+        return isValidPosition(convertRowColPosToString(row, col));
     }
 
     @Override
