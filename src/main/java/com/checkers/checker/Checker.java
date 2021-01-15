@@ -1,4 +1,8 @@
-package com.checkers;
+package com.checkers.checker;
+
+import com.checkers.board.Board;
+import com.checkers.board.BoardPosition;
+import com.checkers.moves.Move;
 
 import java.util.function.Function;
 
@@ -59,7 +63,8 @@ public class Checker {
     }
 
     public boolean canMove(Board board) {
-        if (position == null) return false;
+        if (position == null)
+            return false;
 
         int row = position.getBoardRow();
         int col = position.getBoardCol();

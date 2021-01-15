@@ -1,4 +1,8 @@
-package com.checkers;
+package com.checkers.moves;
+
+import com.checkers.board.Board;
+import com.checkers.board.BoardPosition;
+import com.checkers.checker.Checker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +12,11 @@ public class Move {
     private final BoardPosition startPos;
     private final BoardPosition endPos;
     private final Board board;
-    private final boolean isValid;
+    private boolean validMove;
+    private boolean validNormalMove;
+    private boolean validKingMove;
+    private boolean validNormalCapture;
+    private boolean validKingCapture;
 
     private final Checker movingChecker;
     private final List<Checker> capturedCheckers = new ArrayList<>();
@@ -18,7 +26,7 @@ public class Move {
         this.endPos = new BoardPosition(endPos);
         this.board = board;
         this.movingChecker = board.getChecker(this.startPos);
-        isValid = isValidMoveUtil();
+        setValidBooleans();
     }
 
     public Move(String startPos, String endPos, Board board) {
@@ -26,7 +34,7 @@ public class Move {
         this.endPos = new BoardPosition(endPos);
         this.board = board;
         this.movingChecker = board.getChecker(this.startPos);
-        isValid = isValidMoveUtil();
+        setValidBooleans();
     }
 
     public Move(BoardPosition startPos,
@@ -36,11 +44,27 @@ public class Move {
         this.endPos = endPos;
         this.board = board;
         this.movingChecker = board.getChecker(this.startPos);
-        isValid = isValidMoveUtil();
+        setValidBooleans();
     }
 
     public boolean isValidMove() {
-        return isValid;
+        return validMove;
+    }
+
+    public boolean isValidNormalMove() {
+        return validNormalMove;
+    }
+
+    public boolean isValidKingMove() {
+        return validKingMove;
+    }
+
+    public boolean isValidNormalCapture() {
+        return validNormalCapture;
+    }
+
+    public boolean isValidKingCapture() {
+        return validKingCapture;
     }
 
     public List<Checker> getCapturedCheckers() {
@@ -55,6 +79,14 @@ public class Move {
         return endPos;
     }
 
+    private void setValidBooleans() {
+        this.validNormalMove = isValidNormalMoveUtil();
+        this.validKingMove = isValidKingMoveUtil();
+        this.validNormalCapture = isValidNormalCaptureUtil();
+        this.validKingCapture = isValidKingCaptureUtil();
+        this.validMove = isValidMoveUtil();
+    }
+
     private boolean isValidMoveUtil() {
         if (!movingChecker.isKing())
             return (isValidNormalCapture() || isValidNormalMove());
@@ -63,33 +95,36 @@ public class Move {
         }
     }
 
-    public boolean isValidNormalMove() {
+    private boolean isValidNormalMoveUtil() {
         if (!board.isOccupied(startPos))
             return false;
+
         if (board.isOccupied(endPos))
             return false;
 
-        if (movingChecker.isKing()) return false;
+        if (movingChecker.isKing())
+            return false;
 
         int startRow = startPos.getBoardRow();
         int startCol = startPos.getBoardCol();
         int endRow = endPos.getBoardRow();
         int endCol = endPos.getBoardCol();
 
-        if (movingChecker.getSide() == Checker.Side.BLACK) {
+        if (movingChecker.getSide() == Checker.Side.BLACK)
             return endRow == startRow - 1 && Math.abs(endCol - startCol) == 1;
-        } else {
+        else
             return endRow == startRow + 1 && Math.abs(endCol - startCol) == 1;
-        }
     }
 
-    public boolean isValidKingMove() {
+    private boolean isValidKingMoveUtil() {
         if (!board.isOccupied(startPos))
             return false;
+
         if (board.isOccupied(endPos))
             return false;
 
-        if (!movingChecker.isKing()) return false;
+        if (!movingChecker.isKing())
+            return false;
 
         int startRow = startPos.getBoardRow();
         int startCol = startPos.getBoardCol();
@@ -132,13 +167,15 @@ public class Move {
         return false;
     }
 
-    public boolean isValidNormalCapture() {
+    private boolean isValidNormalCaptureUtil() {
         if (!board.isOccupied(startPos))
             return false;
+
         if (board.isOccupied(endPos))
             return false;
 
-        if (movingChecker.isKing()) return false;
+        if (movingChecker.isKing())
+            return false;
 
         int startRow = startPos.getBoardRow();
         int startCol = startPos.getBoardCol();
@@ -163,18 +200,25 @@ public class Move {
         return false;
     }
 
-    public boolean isValidKingCapture() {
+    private boolean isValidKingCaptureUtil() {
         if (!board.isOccupied(startPos))
             return false;
+
         if (board.isOccupied(endPos))
             return false;
 
-        if (!movingChecker.isKing()) return false;
+        if (!movingChecker.isKing())
+            return false;
 
         int startRow = startPos.getBoardRow();
         int startCol = startPos.getBoardCol();
         int endRow = endPos.getBoardRow();
         int endCol = endPos.getBoardCol();
+
+        int rowDiff = Math.abs(startRow - endRow);
+        int colDiff = Math.abs(startCol - endCol);
+        if (rowDiff != colDiff)
+            return false;
 
         int curRow = startRow;
         int curCol = startCol;
@@ -226,39 +270,9 @@ public class Move {
     @Override
     public String toString() {
         return String.format(
-            "src.com.checkers.Move from %s to %s; isValidMove? %s; capturedCheckers=%s",
-            startPos, endPos, isValid, capturedCheckers
+            "Move from %s to %s; isValidMove? %s; capturedCheckers=%s",
+            startPos, endPos, validMove, capturedCheckers
         );
     }
 
-    public static void main(String[] args) {
-        System.out.println("NORMAL MOVES TEST\n");
-        Board board = new Board();
-        board.initBoard();
-        board.display();
-
-        System.out.println("Is move from 'd6' to 'e5' valid? " + new Move("d6", "e5", board).isValidMove() + "\n");
-        board.move("d6", "e5");
-        board.display();
-
-        System.out.println("Is move from 'e5' to 'f4' valid? " + new Move("e5", "f4", board).isValidMove() + "\n");
-        board.move("e5", "f4");
-        board.display();
-
-        System.out.println("Is move from 'f4' to 'g3' valid? " + new Move("f4", "g3", board).isValidMove());
-        System.out.println("Is move from 'f4' to 'e3' valid? " + new Move("f4", "e3", board).isValidMove());
-        System.out.println("Is move from 'f4' to 'g5' valid? " + new Move("f4", "g5", board).isValidMove());
-        System.out.println("Is move from 'f4' to 'e5' valid? " + new Move("f4", "e5", board).isValidMove());
-        System.out.println("Is move from 'f4' to 'd6' valid? " + new Move("f4", "d6", board).isValidMove());
-
-        System.out.println("Is move from 'g3' to 'e5' valid? " + new Move("g3", "e5", board).isValidMove());
-        System.out.println("Is move from 'e3' to 'g5' valid? " + new Move("e3", "g5", board).isValidMove());
-        System.out.println("Is move from 'g3' to 'f4' valid? " + new Move("g3", "f4", board).isValidMove());
-        System.out.println("Is move from 'e3' to 'f4' valid? " + new Move("e3", "f4", board).isValidMove());
-
-        System.out.println(
-            "Captured checker from move 'e3:g5' " +
-            new Move("e3", "g5", board).getCapturedCheckers().get(0).getPosition()
-        );
-    }
 }

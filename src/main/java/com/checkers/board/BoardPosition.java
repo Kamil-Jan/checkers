@@ -1,4 +1,4 @@
-package com.checkers;
+package com.checkers.board;
 
 import java.security.InvalidParameterException;
 
@@ -130,21 +130,4 @@ public class BoardPosition {
         return stringPosition;
     }
 
-    public static void main(String[] args) {
-        for (int i = 1; i <= 32; i++) {
-            String Spos = BoardPosition.convertIntPosToString(i);
-            int Ipos = BoardPosition.convertStringPosToInt(Spos);
-
-            BoardPosition BPos = new BoardPosition(Ipos);
-            int row = BPos.getBoardRow();
-            int col = BPos.getBoardCol();
-            String converted = BoardPosition.convertRowColPosToString(row, col);
-
-            System.out.printf("i=%d, int pos=%d, string pos=%s, row=%d, col=%d, convertedColRow=%s%n",
-                              i, Ipos, Spos, row, col, converted);
-
-            if (i % 4 == 0)
-                System.out.println();
-        }
-    }
 }

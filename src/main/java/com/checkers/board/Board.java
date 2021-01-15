@@ -1,5 +1,9 @@
-package com.checkers;
+package com.checkers.board;
 
+import com.checkers.checker.Checker;
+import com.checkers.moves.Move;
+
+import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.Hashtable;
 
@@ -33,12 +37,15 @@ public class Board {
         return getChecker(new BoardPosition(pos));
     }
 
-    public Checker getChecker(BoardPosition bPos) {
-        return board.get(bPos);
-    }
-
     public Checker getChecker(int row, int col) {
         return board.get(new BoardPosition(row, col));
+    }
+
+    public Checker getChecker(BoardPosition bPos) {
+        Checker checker = board.get(bPos);
+        if (checker == null || checker.equals(nullChecker))
+            return null;
+        return checker;
     }
 
     public Collection<Checker> getCheckers() {
@@ -93,28 +100,30 @@ public class Board {
         System.out.println();
     }
 
-    public void move(int start, int end) {
+    public void moveChecker(int start, int end) {
         BoardPosition bPosStart = new BoardPosition(start);
         BoardPosition bPosEnd = new BoardPosition(end);
-        move(bPosStart, bPosEnd);
+        moveChecker(bPosStart, bPosEnd);
     }
 
-    public void move(String start, String end) {
+    public void moveChecker(String start, String end) {
         BoardPosition bPosStart = new BoardPosition(start);
         BoardPosition bPosEnd = new BoardPosition(end);
-        move(bPosStart, bPosEnd);
+        moveChecker(bPosStart, bPosEnd);
     }
 
-    public void move(Move move) {
+    public void moveChecker(Move move) {
         BoardPosition bPosStart = move.getStartPosition();
         BoardPosition bPosEnd = move.getEndPosition();
-        move(bPosStart, bPosEnd);
+        moveChecker(bPosStart, bPosEnd);
     }
 
-    public void move(BoardPosition start, BoardPosition end) {
+    public void moveChecker(BoardPosition start, BoardPosition end) {
         Checker movingChecker = board.get(start);
-        movingChecker.setPosition(end);
+        if (movingChecker.equals(nullChecker))
+            throw new InvalidParameterException("Invalid start position: " + start);
 
+        movingChecker.setPosition(end);
         board.put(start, nullChecker);
         board.put(end, movingChecker);
     }
@@ -213,16 +222,5 @@ public class Board {
         System.out.flush();
     }
 
-    public static void main(String[] args) {
-        Board board = new Board();
-        board.initBoard();
-        board.move("c3", "d4");
-        board.removeChecker("b2");
-        board.removeChecker("b8");
-        board.display();
-        System.out.println(board.isOccupied(18));
-        System.out.println(board.isOccupied("d4"));
-        System.out.println(board.isOccupied(new BoardPosition(18)));
-    }
 }
 
