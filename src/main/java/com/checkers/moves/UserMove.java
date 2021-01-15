@@ -20,32 +20,32 @@ public class UserMove {
         Move move;
         while (true) {
             startPos = getPosition(br, "Enter checker position: ");
-            if (startPos == null) continue;
+            if (startPos == null)
+                continue;
 
             if (!board.isOccupied(startPos)) {
-                System.out.println("Invalid checker position");
+                System.out.println("Invalid checker position\n");
+                continue;
+            }
+
+            if (board.getChecker(startPos).getSide() != turn) {
+                System.out.println(turn + "'s move, not " + board.getChecker(startPos).getSide() + "'s\n");
                 continue;
             }
 
             endPos = getPosition(br, "Enter position to move to: ");
-            if (endPos == null) continue;
-
-            if (board.getChecker(startPos).getSide() != turn) {
-                System.out.println(turn + "'s move, not " + board.getChecker(startPos).getSide() + "'s'");
+            if (endPos == null)
                 continue;
-            }
 
             move = new Move(startPos, endPos, board);
             if (!move.isValidMove()) {
-                System.out.println("Invalid move");
+                System.out.println("Invalid move\n");
                 continue;
             }
 
-            List<Checker> canCaptureCheckers = getCaptureMoves(board, turn);
-            if (canCaptureCheckers.size() != 0 &&
-                !(move.isValidNormalCapture() || move.isValidKingCapture())) {
-
-                System.out.println(turn + " must capture");
+            boolean checkersCanCapture = areCheckersCanCapture(board, turn);
+            if (checkersCanCapture && !(move.isValidNormalCapture() || move.isValidKingCapture())) {
+                System.out.println(turn + " must capture\n");
                 continue;
             }
             break;
@@ -68,35 +68,29 @@ public class UserMove {
 
     private static BoardPosition getPosition(BufferedReader br, String text) {
         String stringPos;
-        while (true) {
-            System.out.print(text);
-
-            try {
-                stringPos = br.readLine();
-            } catch (IOException e) {
-                continue;
-            }
-
-            if (stringPos.equals("cancel"))
-                return null;
-
-            if (BoardPosition.isValidPosition(stringPos))
-                break;
-
-            System.out.println("Invalid position");
+        System.out.print(text);
+        try {
+            stringPos = br.readLine();
+        } catch (IOException e) {
+            return null;
         }
 
-        return new BoardPosition(stringPos);
+        if (stringPos.equals("cancel")) return null;
+
+        if (BoardPosition.isValidPosition(stringPos))
+            return new BoardPosition(stringPos);
+
+        System.out.println("Invalid checker position\n");
+        return null;
     }
 
-    private static List<Checker> getCaptureMoves(Board board, Checker.Side turn) {
-        List<Checker> canCaptureCheckers = new ArrayList<>();
+    private static boolean areCheckersCanCapture(Board board, Checker.Side turn) {
         for (Checker checker : board.getCheckers()) {
             if (checker.getSide() == turn && checker.canCapture(board)) {
-                canCaptureCheckers.add(checker);
+                return true;
             }
         }
-        return canCaptureCheckers;
+        return false;
     }
 
 }

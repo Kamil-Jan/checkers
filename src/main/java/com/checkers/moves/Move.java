@@ -133,38 +133,54 @@ public class Move {
 
         int rowDiff = Math.abs(startRow - endRow);
         int colDiff = Math.abs(startCol - endCol);
-        if (rowDiff == colDiff) {
-            int curRow = startRow;
-            int curCol = startCol;
+        if (rowDiff != colDiff)
+            return false;
 
-            Function<Integer, Integer> add = (Integer x) -> x + 1;
-            Function<Integer, Integer> subtract = (Integer x) -> x - 1;
+        int curRow = startRow;
+        int curCol = startCol;
 
-            Function<Integer, Integer> rowOperation;
-            Function<Integer, Integer> colOperation;
-            if (curRow < endRow)
-                rowOperation = add;
-            else
-                rowOperation = subtract;
+        Function<Integer, Integer> add = (Integer x) -> x + 1;
+        Function<Integer, Integer> subtract = (Integer x) -> x - 1;
 
-            if (curCol < endCol)
-                colOperation = add;
-            else
-                colOperation = subtract;
+        Function<Integer, Integer> rowOperation;
+        Function<Integer, Integer> colOperation;
+        Function<Integer, Boolean> rowLoopStop;
+        Function<Integer, Boolean> colLoopStop;
+        if (curRow < endRow) {
+            rowOperation = add;
+            rowLoopStop = (Integer x) -> x > endRow ;
+        } else {
+            rowOperation = subtract;
+            rowLoopStop = (Integer x) -> x < endRow ;
+        }
 
+        if (curCol < endCol) {
+            colOperation = add;
+            colLoopStop = (Integer x) -> x > endCol ;
+        }
+        else {
+            colOperation = subtract;
+            colLoopStop = (Integer x) -> x < endCol ;
+        }
+
+        curRow = rowOperation.apply(curRow);
+        curCol = colOperation.apply(curCol);
+
+        while (!colLoopStop.apply(curCol) && !rowLoopStop.apply(curRow)) {
+            if (board.isOccupied(curRow, curCol)) {
+                if (board.isOccupied(rowOperation.apply(curRow), colOperation.apply(curCol)))
+                    return false;
+
+                if (board.getChecker(curRow, curCol).getSide() != movingChecker.getSide() &&
+                        !capturedCheckers.contains(board.getChecker(curRow, curCol))) {
+
+                    capturedCheckers.add(board.getChecker(curRow, curCol));
+                }
+            }
             curRow = rowOperation.apply(curRow);
             curCol = colOperation.apply(curCol);
-
-            while (curRow != endRow && curCol != endRow) {
-                if (board.isOccupied(curRow, curCol)) {
-                    if (board.isOccupied(curRow + 1, curCol + 1)) return false;
-                }
-                curRow = rowOperation.apply(curRow);
-                curCol = colOperation.apply(curCol);
-            }
-            return true;
         }
-        return false;
+        return true;
     }
 
     private boolean isValidNormalCaptureUtil() {
@@ -201,70 +217,7 @@ public class Move {
     }
 
     private boolean isValidKingCaptureUtil() {
-        if (!board.isOccupied(startPos))
-            return false;
-
-        if (board.isOccupied(endPos))
-            return false;
-
-        if (!movingChecker.isKing())
-            return false;
-
-        int startRow = startPos.getBoardRow();
-        int startCol = startPos.getBoardCol();
-        int endRow = endPos.getBoardRow();
-        int endCol = endPos.getBoardCol();
-
-        int rowDiff = Math.abs(startRow - endRow);
-        int colDiff = Math.abs(startCol - endCol);
-        if (rowDiff != colDiff)
-            return false;
-
-        int curRow = startRow;
-        int curCol = startCol;
-
-        Function<Integer, Integer> add = (Integer x) -> x + 1;
-        Function<Integer, Integer> subtract = (Integer x) -> x - 1;
-
-        Function<Integer, Integer> rowOperation;
-        Function<Integer, Integer> colOperation;
-        Function<Integer, Boolean> rowLoopStop;
-        Function<Integer, Boolean> colLoopStop;
-        if (curRow < endRow) {
-            rowOperation = add;
-            rowLoopStop = (Integer x) -> x > endRow ;
-        } else {
-            rowOperation = subtract;
-            rowLoopStop = (Integer x) -> x < endRow ;
-        }
-
-        if (curCol < endCol) {
-            colOperation = add;
-            colLoopStop = (Integer x) -> x > endCol ;
-        }
-        else {
-            colOperation = subtract;
-            colLoopStop = (Integer x) -> x < endCol ;
-        }
-
-        curRow = rowOperation.apply(curRow);
-        curCol = colOperation.apply(curCol);
-
-        while (!colLoopStop.apply(curCol) && !rowLoopStop.apply(curRow)) {
-            if (board.isOccupied(curRow, curCol)) {
-                if (board.isOccupied(rowOperation.apply(curRow), colOperation.apply(curCol))) return false;
-
-                if (board.getChecker(curRow, curCol).getSide() != movingChecker.getSide() &&
-                    !capturedCheckers.contains(board.getChecker(curRow, curCol))) {
-
-                    capturedCheckers.add(board.getChecker(curRow, curCol));
-                }
-            }
-            curRow = rowOperation.apply(curRow);
-            curCol = colOperation.apply(curCol);
-        }
-
-        return (capturedCheckers.size() != 0);
+        return movingChecker.isKing() && getCapturedCheckers().size() != 0;
     }
 
     @Override

@@ -24,8 +24,8 @@ public class Checker {
 
     public Checker(Side side, BoardPosition pos) {
         this.side = side;
-        position = pos;
         king = false;
+        setPosition(pos);
         setSymbol();
     }
 
@@ -93,16 +93,14 @@ public class Checker {
         int col = position.getBoardCol();
 
         if (!king) {
-            Function<Move, Boolean> captureFilter =
-                (Move move) -> (move.isValidNormalCapture() && move.isValidMove());
+            Function<Move, Boolean> captureFilter = Move::isValidNormalCapture;
 
             if (isFilteredNormalMove(row, col, row - 2, col - 2, board, captureFilter)) return true;
             if (isFilteredNormalMove(row, col, row - 2, col + 2, board, captureFilter)) return true;
             if (isFilteredNormalMove(row, col, row + 2, col - 2, board, captureFilter)) return true;
             return isFilteredNormalMove(row, col, row + 2, col + 2, board, captureFilter);
         } else {
-            Function<Move, Boolean> captureFilter =
-                (Move move) -> (move.isValidKingCapture() && move.isValidMove());
+            Function<Move, Boolean> captureFilter = Move::isValidKingCapture;
 
             Function<Integer, Integer> add = (Integer x) -> x + 1;
             Function<Integer, Integer> subtract = (Integer x) -> x - 1;
@@ -117,7 +115,7 @@ public class Checker {
     private boolean isFilteredNormalMove(int startRow, int startCol, int endRow, int endCol,
                                          Board board, Function<Move, Boolean> filter) {
         if (BoardPosition.isValidPosition(startRow, startCol) &&
-            BoardPosition.isValidPosition(endRow, endCol)) {
+                BoardPosition.isValidPosition(endRow, endCol)) {
 
             BoardPosition startBPos = new BoardPosition(startRow, startCol);
             BoardPosition endBPos = new BoardPosition(endRow, endCol);
@@ -128,9 +126,9 @@ public class Checker {
     }
 
     private boolean isFilteredKingMove(int startRow, int startCol,
-                                      Function<Integer, Integer> rowOperation,
-                                      Function<Integer, Integer> colOperation,
-                                      Board board, Function<Move, Boolean> filter) {
+                                       Function<Integer, Integer> rowOperation,
+                                       Function<Integer, Integer> colOperation,
+                                       Board board, Function<Move, Boolean> filter) {
         int curRow = rowOperation.apply(startRow);
         int curCol = colOperation.apply(startCol);
         while (BoardPosition.isValidPosition(curRow, curCol)) {
@@ -142,9 +140,9 @@ public class Checker {
     }
 
     private boolean isFilteredKingMove(int startRow, int startCol, int endRow, int endCol,
-                                      Board board, Function<Move, Boolean> filter) {
+                                       Board board, Function<Move, Boolean> filter) {
         if (BoardPosition.isValidPosition(startRow, startCol) &&
-            BoardPosition.isValidPosition(endRow, endCol)) {
+                BoardPosition.isValidPosition(endRow, endCol)) {
 
             BoardPosition startBPos = new BoardPosition(startRow, startCol);
             BoardPosition endBPos = new BoardPosition(endRow, endCol);
@@ -157,8 +155,8 @@ public class Checker {
     @Override
     public String toString() {
         return String.format(
-            "Side=%s; position=%s, isKing=%b; symbol=%s",
-            side, position, king, symbol
+                "Side=%s; position=%s, isKing=%b; symbol=%s",
+                side, position, king, symbol
         );
     }
 
