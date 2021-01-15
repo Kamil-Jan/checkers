@@ -4,18 +4,18 @@ import com.checkers.checker.Checker;
 import com.checkers.moves.Move;
 import org.junit.jupiter.api.Test;
 
+import java.security.InvalidParameterException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BoardTest {
-
     @Test
     public void testCheckerGetters() {
         Board board = new Board();
         board.initBoard();
 
-        BoardPosition BPos;
         for (int i = 1; i <= 12; i++) {
-            BPos = new BoardPosition(i);
+            BoardPosition BPos = new BoardPosition(i);
             assertNotNull(board.getChecker(BPos.getIntPosition()));
             assertNotNull(board.getChecker(BPos.getStringPosition()));
             assertNotNull(board.getChecker(
@@ -27,19 +27,19 @@ public class BoardTest {
         }
 
         for (int i = 13; i <= 20; i++) {
-            BPos = new BoardPosition(i);
-            assertNull(board.getChecker(BPos.getIntPosition()));
-            assertNull(board.getChecker(BPos.getStringPosition()));
-            assertNull(board.getChecker(
+            BoardPosition BPos = new BoardPosition(i);
+            assertThrows(InvalidParameterException.class, () -> board.getChecker(BPos.getIntPosition()));
+            assertThrows(InvalidParameterException.class, () -> board.getChecker(BPos.getStringPosition()));
+            assertThrows(InvalidParameterException.class, () -> board.getChecker(
                     BPos.getBoardRow(),
                     BPos.getBoardCol()
                     )
             );
-            assertNull(board.getChecker(BPos));
+            assertThrows(InvalidParameterException.class, () -> board.getChecker(BPos));
         }
 
         for (int i = 21; i <= 32; i++) {
-            BPos = new BoardPosition(i);
+            BoardPosition BPos = new BoardPosition(i);
             assertNotNull(board.getChecker(BPos.getIntPosition()));
             assertNotNull(board.getChecker(BPos.getStringPosition()));
             assertNotNull(board.getChecker(

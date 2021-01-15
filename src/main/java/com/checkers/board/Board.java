@@ -29,23 +29,22 @@ public class Board {
         }
     }
 
-    public Checker getChecker(int pos) {
+    public Checker getChecker(int pos) throws InvalidParameterException {
         return getChecker(new BoardPosition(pos));
     }
 
-    public Checker getChecker(String pos) {
+    public Checker getChecker(String pos) throws InvalidParameterException {
         return getChecker(new BoardPosition(pos));
     }
 
-    public Checker getChecker(int row, int col) {
-        return board.get(new BoardPosition(row, col));
+    public Checker getChecker(int row, int col) throws InvalidParameterException {
+        return getChecker(new BoardPosition(row, col));
     }
 
-    public Checker getChecker(BoardPosition bPos) {
-        Checker checker = board.get(bPos);
-        if (checker == null || checker.equals(nullChecker))
-            return null;
-        return checker;
+    public Checker getChecker(BoardPosition bPos) throws InvalidParameterException {
+        if (!isOccupied(bPos))
+            throw new InvalidParameterException("Position is not occupied: " + bPos);
+        return board.get(bPos);
     }
 
     public Collection<Checker> getCheckers() {
@@ -60,69 +59,73 @@ public class Board {
         return blackSideCheckerCount;
     }
 
-    public void display() {
+    private void printRowNames() {
         System.out.print("  ");
-        for (int i = 1; i <= 8; i++) {
-            System.out.print(" " + (char)(i + 'a' - 1) + " ");
+        char[] rows = "abcdefgh".toCharArray();
+        for (char ch : rows) {
+            System.out.print(" " + ch + " ");
         }
         System.out.println();
-        System.out.println("---".repeat(9));
+    }
 
-        int row = 1;
+    public void display() {
+        String verLine = "⏐";
+        String horLine = "⎯";
+        String emptyField = "__";
+
+        printRowNames();
+        System.out.println(horLine.repeat(27));
         for (int pos = 1; pos <= 32; pos++) {
-            if (pos % 4 == 1)
-                System.out.print(BoardPosition.convertIntPosToString(pos).charAt(1) + "|");
-
             BoardPosition bPos = new BoardPosition(pos);
-            if (row % 2 != 0) {
-                if (board.containsKey(bPos) && !board.get(bPos).equals(nullChecker))
-                    System.out.print(" . " + " " +  board.get(bPos).getSymbol() + " ");
+            int row = bPos.getBoardRow();
+
+            if (pos % 4 == 1)
+                System.out.print(row + verLine);
+
+            if (row % 2 == 0) {
+                if (isOccupied(bPos))
+                    System.out.print(emptyField + verLine +  getChecker(bPos).getSymbol() + " " + verLine);
                 else
-                    System.out.print(" . " + " . ");
+                    System.out.print(emptyField + verLine + emptyField + verLine);
             } else {
-                if (board.containsKey(bPos) && !board.get(bPos).equals(nullChecker))
-                    System.out.print(" " +  board.get(bPos).getSymbol() + " " + " . ");
+                if (isOccupied(bPos))
+                    System.out.print(getChecker(bPos).getSymbol() + " " + verLine + emptyField + verLine);
                 else
-                    System.out.print(" . " + " . ");
+                    System.out.print(emptyField + verLine + emptyField + verLine);
             }
 
             if (pos % 4 == 0) {
-                System.out.println("|" + BoardPosition.convertIntPosToString(pos).charAt(1));
-                row++;
+                System.out.println(row);
             }
         }
 
-        System.out.println("---".repeat(9));
-        System.out.print("  ");
-        for (int i = 1; i <= 8; i++) {
-            System.out.print(" " + (char)(i + 'a' - 1) + " ");
-        }
-        System.out.println();
+        System.out.println(horLine.repeat(27));
+        printRowNames();
     }
 
-    public void moveChecker(int start, int end) {
+    public void moveChecker(int start, int end) throws InvalidParameterException {
         BoardPosition bPosStart = new BoardPosition(start);
         BoardPosition bPosEnd = new BoardPosition(end);
         moveChecker(bPosStart, bPosEnd);
     }
 
-    public void moveChecker(String start, String end) {
+    public void moveChecker(String start, String end) throws InvalidParameterException {
         BoardPosition bPosStart = new BoardPosition(start);
         BoardPosition bPosEnd = new BoardPosition(end);
         moveChecker(bPosStart, bPosEnd);
     }
 
-    public void moveChecker(Move move) {
+    public void moveChecker(Move move) throws InvalidParameterException {
         BoardPosition bPosStart = move.getStartPosition();
         BoardPosition bPosEnd = move.getEndPosition();
         moveChecker(bPosStart, bPosEnd);
     }
 
-    public void moveChecker(BoardPosition start, BoardPosition end) {
-        Checker movingChecker = board.get(start);
-        if (movingChecker.equals(nullChecker))
-            throw new InvalidParameterException("Invalid start position: " + start);
+    public void moveChecker(BoardPosition start, BoardPosition end) throws InvalidParameterException {
+        if (!isOccupied(start))
+            throw new InvalidParameterException("Start position is not occupied: " + start);
 
+        Checker movingChecker = board.get(start);
         movingChecker.setPosition(end);
         board.put(start, nullChecker);
         board.put(end, movingChecker);
@@ -138,30 +141,31 @@ public class Board {
 
     public void putChecker(String pos, Checker.Side side) {
         putChecker(new BoardPosition(pos), side);
+    }
+
+    public void putChecker(BoardPosition BPos, Checker.Side side) {
+        board.put(BPos, new Checker(side, BPos));
         if (side == Checker.Side.BLACK)
             blackSideCheckerCount++;
         else
             whiteSideCheckerCount++;
     }
 
-    public void putChecker(BoardPosition BPos, Checker.Side side) {
-        board.put(BPos, new Checker(side, BPos));
-    }
-
-    public void removeChecker(int pos) {
+    public void removeChecker(int pos) throws InvalidParameterException {
         removeChecker(new BoardPosition(pos));
     }
 
-    public void removeChecker(int row, int col) {
+    public void removeChecker(int row, int col) throws InvalidParameterException {
         removeChecker(new BoardPosition(row, col));
     }
 
-    public void removeChecker(String pos) {
+    public void removeChecker(String pos) throws InvalidParameterException {
         removeChecker(new BoardPosition(pos));
     }
 
-    public void removeChecker(BoardPosition bPos) {
-        if (!isOccupied(bPos)) return;
+    public void removeChecker(BoardPosition bPos) throws InvalidParameterException {
+        if (!isOccupied(bPos))
+            throw new InvalidParameterException("Position is not occupied: " + bPos);
 
         Checker checker = board.get(bPos);
         if (checker.getSide().equals(Checker.Side.BLACK))
