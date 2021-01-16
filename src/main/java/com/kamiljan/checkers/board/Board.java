@@ -3,7 +3,6 @@ package com.kamiljan.checkers.board;
 import com.kamiljan.checkers.checker.Checker;
 import com.kamiljan.checkers.moves.Move;
 
-import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -28,21 +27,21 @@ public class Board {
         }
     }
 
-    public Checker getChecker(int pos) throws InvalidParameterException {
+    public Checker getChecker(int pos) throws IllegalArgumentException {
         return getChecker(new BoardPosition(pos));
     }
 
-    public Checker getChecker(String pos) throws InvalidParameterException {
+    public Checker getChecker(String pos) throws IllegalArgumentException {
         return getChecker(new BoardPosition(pos));
     }
 
-    public Checker getChecker(int row, int col) throws InvalidParameterException {
+    public Checker getChecker(int row, int col) throws IllegalArgumentException {
         return getChecker(new BoardPosition(row, col));
     }
 
-    public Checker getChecker(BoardPosition bPos) throws InvalidParameterException {
+    public Checker getChecker(BoardPosition bPos) throws IllegalArgumentException {
         if (!isOccupied(bPos))
-            throw new InvalidParameterException("Position is not occupied: " + bPos);
+            throw new IllegalArgumentException("Position is not occupied: " + bPos);
         return board.get(bPos);
     }
 
@@ -102,27 +101,27 @@ public class Board {
         printRowNames();
     }
 
-    public void moveChecker(int start, int end) throws InvalidParameterException {
+    public void moveChecker(int start, int end) throws IllegalArgumentException {
         BoardPosition bPosStart = new BoardPosition(start);
         BoardPosition bPosEnd = new BoardPosition(end);
         moveChecker(bPosStart, bPosEnd);
     }
 
-    public void moveChecker(String start, String end) throws InvalidParameterException {
+    public void moveChecker(String start, String end) throws IllegalArgumentException {
         BoardPosition bPosStart = new BoardPosition(start);
         BoardPosition bPosEnd = new BoardPosition(end);
         moveChecker(bPosStart, bPosEnd);
     }
 
-    public void moveChecker(Move move) throws InvalidParameterException {
+    public void moveChecker(Move move) throws IllegalArgumentException {
         BoardPosition bPosStart = move.getStartPosition();
         BoardPosition bPosEnd = move.getEndPosition();
         moveChecker(bPosStart, bPosEnd);
     }
 
-    public void moveChecker(BoardPosition start, BoardPosition end) throws InvalidParameterException {
+    public void moveChecker(BoardPosition start, BoardPosition end) throws IllegalArgumentException {
         if (!isOccupied(start))
-            throw new InvalidParameterException("Start position is not occupied: " + start);
+            throw new IllegalArgumentException("Start position is not occupied: " + start);
 
         Checker movingChecker = board.get(start);
         movingChecker.setPosition(end);
@@ -150,21 +149,21 @@ public class Board {
             whiteSideCheckerCount++;
     }
 
-    public void removeChecker(int pos) throws InvalidParameterException {
+    public void removeChecker(int pos) throws IllegalArgumentException {
         removeChecker(new BoardPosition(pos));
     }
 
-    public void removeChecker(int row, int col) throws InvalidParameterException {
+    public void removeChecker(int row, int col) throws IllegalArgumentException {
         removeChecker(new BoardPosition(row, col));
     }
 
-    public void removeChecker(String pos) throws InvalidParameterException {
+    public void removeChecker(String pos) throws IllegalArgumentException {
         removeChecker(new BoardPosition(pos));
     }
 
-    public void removeChecker(BoardPosition bPos) throws InvalidParameterException {
+    public void removeChecker(BoardPosition bPos) throws IllegalArgumentException {
         if (!isOccupied(bPos))
-            throw new InvalidParameterException("Position is not occupied: " + bPos);
+            throw new IllegalArgumentException("Position is not occupied: " + bPos);
 
         Checker checker = board.get(bPos);
         if (checker.getSide().equals(Checker.Side.BLACK))

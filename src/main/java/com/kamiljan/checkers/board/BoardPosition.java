@@ -1,14 +1,12 @@
 package com.kamiljan.checkers.board;
 
-import java.security.InvalidParameterException;
-
 public class BoardPosition {
     String stringPosition;
     int intPosition;
 
     public BoardPosition(int pos) {
         if (!isValidPosition(pos))
-            throw new InvalidParameterException("Invalid position: " + pos);
+            throw new IllegalArgumentException("Invalid position: " + pos);
 
         stringPosition = convertIntPosToString(pos);
         intPosition = pos;
@@ -16,7 +14,7 @@ public class BoardPosition {
 
     public BoardPosition(String pos) {
         if (!isValidPosition(pos))
-            throw new InvalidParameterException("Invalid position: " + pos);
+            throw new IllegalArgumentException("Invalid position: " + pos);
 
         stringPosition = pos;
         intPosition = convertStringPosToInt(pos);
@@ -24,7 +22,7 @@ public class BoardPosition {
 
     public BoardPosition(int row, int col) {
         if (!isValidPosition(row, col))
-            throw new InvalidParameterException("Invalid position: " + row + " " + col);
+            throw new IllegalArgumentException("Invalid position: " + row + " " + col);
 
         stringPosition = convertRowColPosToString(row, col);
         intPosition = convertStringPosToInt(stringPosition);

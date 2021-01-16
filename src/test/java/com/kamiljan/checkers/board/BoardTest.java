@@ -4,8 +4,6 @@ import com.kamiljan.checkers.checker.Checker;
 import com.kamiljan.checkers.moves.Move;
 import org.junit.jupiter.api.Test;
 
-import java.security.InvalidParameterException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BoardTest {
@@ -28,14 +26,14 @@ public class BoardTest {
 
         for (int i = 13; i <= 20; i++) {
             BoardPosition BPos = new BoardPosition(i);
-            assertThrows(InvalidParameterException.class, () -> board.getChecker(BPos.getIntPosition()));
-            assertThrows(InvalidParameterException.class, () -> board.getChecker(BPos.getStringPosition()));
-            assertThrows(InvalidParameterException.class, () -> board.getChecker(
+            assertThrows(IllegalArgumentException.class, () -> board.getChecker(BPos.getIntPosition()));
+            assertThrows(IllegalArgumentException.class, () -> board.getChecker(BPos.getStringPosition()));
+            assertThrows(IllegalArgumentException.class, () -> board.getChecker(
                     BPos.getBoardRow(),
                     BPos.getBoardCol()
                     )
             );
-            assertThrows(InvalidParameterException.class, () -> board.getChecker(BPos));
+            assertThrows(IllegalArgumentException.class, () -> board.getChecker(BPos));
         }
 
         for (int i = 21; i <= 32; i++) {
