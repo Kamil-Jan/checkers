@@ -5,14 +5,13 @@ import com.kamiljan.checkers.moves.Move;
 
 import java.security.InvalidParameterException;
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 public class Board {
-    private final Hashtable<BoardPosition, Checker> board
-        = new Hashtable<>();
+    private final HashMap<BoardPosition, Checker> board
+        = new HashMap<>();
     private int whiteSideCheckerCount;
     private int blackSideCheckerCount;
-    private final Checker nullChecker = new Checker(Checker.Side.WHITE);
     private Checker.Side winner;
 
     public void initBoard() {
@@ -127,7 +126,7 @@ public class Board {
 
         Checker movingChecker = board.get(start);
         movingChecker.setPosition(end);
-        board.put(start, nullChecker);
+        board.remove(start);
         board.put(end, movingChecker);
     }
 
@@ -173,7 +172,7 @@ public class Board {
         else
             whiteSideCheckerCount--;
 
-        board.put(bPos, nullChecker);
+        board.remove(bPos);
     }
 
     public boolean isOccupied(int pos) {
@@ -189,7 +188,7 @@ public class Board {
     }
 
     public boolean isOccupied(BoardPosition bPos) {
-        return board.containsKey(bPos) && !board.get(bPos).equals(nullChecker);
+        return board.containsKey(bPos);
     }
 
     public Checker.Side getWinner() {
