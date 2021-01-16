@@ -1,10 +1,9 @@
-package com.checkers.moves;
+package com.kamiljan.checkers.moves;
 
-import com.checkers.board.Board;
-import com.checkers.board.BoardPosition;
+import com.kamiljan.checkers.board.Board;
+import com.kamiljan.checkers.board.BoardPosition;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

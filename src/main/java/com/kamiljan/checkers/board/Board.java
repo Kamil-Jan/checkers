@@ -1,7 +1,7 @@
-package com.checkers.board;
+package com.kamiljan.checkers.board;
 
-import com.checkers.checker.Checker;
-import com.checkers.moves.Move;
+import com.kamiljan.checkers.checker.Checker;
+import com.kamiljan.checkers.moves.Move;
 
 import java.security.InvalidParameterException;
 import java.util.Collection;

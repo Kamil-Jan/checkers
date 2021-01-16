@@ -1,8 +1,8 @@
-package com.checkers.checker;
+package com.kamiljan.checkers.checker;
 
-import com.checkers.board.Board;
-import com.checkers.board.BoardPosition;
-import com.checkers.moves.Move;
+import com.kamiljan.checkers.board.Board;
+import com.kamiljan.checkers.board.BoardPosition;
+import com.kamiljan.checkers.moves.Move;
 
 import java.util.function.Function;
 

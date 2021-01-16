@@ -1,4 +1,4 @@
-package com.checkers.board;
+package com.kamiljan.checkers.board;
 
 import java.security.InvalidParameterException;
 

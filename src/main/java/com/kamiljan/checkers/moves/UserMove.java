@@ -1,14 +1,12 @@
-package com.checkers.moves;
+package com.kamiljan.checkers.moves;
 
-import com.checkers.board.Board;
-import com.checkers.board.BoardPosition;
-import com.checkers.checker.Checker;
+import com.kamiljan.checkers.board.Board;
+import com.kamiljan.checkers.board.BoardPosition;
+import com.kamiljan.checkers.checker.Checker;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserMove {
 

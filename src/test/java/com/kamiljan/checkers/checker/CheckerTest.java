@@ -1,6 +1,6 @@
-package com.checkers.checker;
+package com.kamiljan.checkers.checker;
 
-import com.checkers.board.Board;
+import com.kamiljan.checkers.board.Board;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

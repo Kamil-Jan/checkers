@@ -1,9 +1,9 @@
-package com.checkers;
+package com.kamiljan.checkers;
 
-import com.checkers.board.Board;
-import com.checkers.checker.Checker;
-import com.checkers.moves.Move;
-import com.checkers.moves.UserMove;
+import com.kamiljan.checkers.board.Board;
+import com.kamiljan.checkers.checker.Checker;
+import com.kamiljan.checkers.moves.Move;
+import com.kamiljan.checkers.moves.UserMove;
 
 public class Main {
     public static void main(String[] args) {
